@@ -1,0 +1,450 @@
+{
+	"info": {
+		"_postman_id": "e87ed73b-be37-4fae-8c19-b3caa146b452",
+		"name": "simpleApi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/simple",
+			"item": [
+				{
+					"name": "simple no name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"// pm.test(\"user check\", function () {",
+									"//     var jsonData = pm.response.json();",
+									"//     pm.expect(jsonData.id).to.eql(\"id\");",
+									"//     pm.expect(jsonData.name).to.eql(\"name\");",
+									"//     pm.expect(jsonData.age).to.eql(23);",
+									"// });",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code\": \"code\",\n    \"age\": 23\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:1232/simple",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1232",
+							"path": [
+								"simple"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "simple max age",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"// pm.test(\"user check\", function () {",
+									"//     var jsonData = pm.response.json();",
+									"//     pm.expect(jsonData.id).to.eql(\"id\");",
+									"//     pm.expect(jsonData.name).to.eql(\"name\");",
+									"//     pm.expect(jsonData.age).to.eql(23);",
+									"// });",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code\": \"code\",\n    \"name\": \"name\",\n    \"age\": 150 // age > max(150)\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:1232/simple",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1232",
+							"path": [
+								"simple"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "simple",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"pm.test(\"user check\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.eql(\"code\");",
+									"    pm.expect(jsonData.name).to.eql(\"name\");",
+									"    pm.expect(jsonData.age).to.eql(23);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code\": \"code\",\n    \"name\": \"name\",\n    \"age\": 23\n}\n\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:1232/simple",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1232",
+							"path": [
+								"simple"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "simple",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Body is correct\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.eql(\"code\");",
+									"    pm.expect(jsonData.name).to.eql(\"name\");",
+									"    pm.expect(jsonData.age).to.eql(23);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:1232/simple/code",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1232",
+							"path": [
+								"simple",
+								"code"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "simple not found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:1232/simple/cooode",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1232",
+							"path": [
+								"simple",
+								"cooode"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "simple",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Body is correct\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.eql(\"code\");",
+									"    pm.expect(jsonData.name).to.eql(\"name2\");",
+									"    pm.expect(jsonData.age).to.eql(19);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code\": \"code\",\n    \"name\": \"name2\",\n    \"age\": 19\n}\n\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:1232/simple/code",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1232",
+							"path": [
+								"simple",
+								"code"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "simple age",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Body is correct\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.eql(\"code\");",
+									"    pm.expect(jsonData.name).to.eql(\"name2\");",
+									"    pm.expect(jsonData.age).to.eql(56);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"age\": 56\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:1232/simple/code",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1232",
+							"path": [
+								"simple",
+								"code"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "simple name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Body is correct\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.eql(\"code\");",
+									"    pm.expect(jsonData.name).to.eql(\"mame\");",
+									"    pm.expect(jsonData.age).to.eql(56);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"mame\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:1232/simple/code",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1232",
+							"path": [
+								"simple",
+								"code"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "simple not found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:1232/simple/cooooooode",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1232",
+							"path": [
+								"simple",
+								"cooooooode"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "simple",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});",
+									"pm.test(\"Body is correct\", function () {",
+									"    pm.response.to.have.body(\"\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:1232/simple/code",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1232",
+							"path": [
+								"simple",
+								"code"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
