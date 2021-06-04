@@ -1,15 +1,15 @@
 {
 	"info": {
-		"_postman_id": "e87ed73b-be37-4fae-8c19-b3caa146b452",
-		"name": "simpleApi",
+		"_postman_id": "5289260e-67c4-4501-b0ff-f728342b1941",
+		"name": "AmazonApi",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "/simple",
+			"name": "/amazon",
 			"item": [
 				{
-					"name": "simple no name",
+					"name": "amazon no name",
 					"event": [
 						{
 							"listen": "test",
@@ -43,21 +43,21 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:1232/simple",
+							"raw": "http://localhost:1232/amazon",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "1232",
 							"path": [
-								"simple"
+								"amazon"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "simple max age",
+					"name": "amazon max age",
 					"event": [
 						{
 							"listen": "test",
@@ -91,21 +91,21 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:1232/simple",
+							"raw": "http://localhost:1232/amazon",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "1232",
 							"path": [
-								"simple"
+								"amazon"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "simple",
+					"name": "amazon",
 					"event": [
 						{
 							"listen": "test",
@@ -131,7 +131,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"code\": \"code\",\n    \"name\": \"name\",\n    \"age\": 23\n}\n\n",
+							"raw": "{\n    \"asin\": \"code\",\n    \"name\": \"code\",\n    \"maker\": \"code\",\n    \"price\": 20,\n    \"reason\": \"code\",\n    \"url\": \"url\"\n}\n\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -139,21 +139,71 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:1232/simple",
+							"raw": "http://localhost:1232/amazon",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "1232",
 							"path": [
-								"simple"
+								"amazon"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "simple",
+					"name": "amazon inactive",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Body is correct\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.eql(\"code\");",
+									"    pm.expect(jsonData.name).to.eql(\"name2\");",
+									"    pm.expect(jsonData.age).to.eql(56);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:1232/amazon/inactive/asin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1232",
+							"path": [
+								"amazon",
+								"inactive",
+								"asin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "amazon",
 					"event": [
 						{
 							"listen": "test",
@@ -178,14 +228,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:1232/simple/code",
+							"raw": "http://localhost:1232/amazon/code",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "1232",
 							"path": [
-								"simple",
+								"amazon",
 								"code"
 							]
 						}
@@ -193,7 +243,7 @@
 					"response": []
 				},
 				{
-					"name": "simple not found",
+					"name": "amazon not found",
 					"event": [
 						{
 							"listen": "test",
@@ -212,14 +262,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:1232/simple/cooode",
+							"raw": "http://localhost:1232/amazon/cooode",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "1232",
 							"path": [
-								"simple",
+								"amazon",
 								"cooode"
 							]
 						}
@@ -227,7 +277,7 @@
 					"response": []
 				},
 				{
-					"name": "simple",
+					"name": "amazon",
 					"event": [
 						{
 							"listen": "test",
@@ -261,14 +311,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:1232/simple/code",
+							"raw": "http://localhost:1232/amazon/code",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "1232",
 							"path": [
-								"simple",
+								"amazon",
 								"code"
 							]
 						}
@@ -276,56 +326,7 @@
 					"response": []
 				},
 				{
-					"name": "simple age",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									"pm.test(\"Body is correct\", function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.code).to.eql(\"code\");",
-									"    pm.expect(jsonData.name).to.eql(\"name2\");",
-									"    pm.expect(jsonData.age).to.eql(56);",
-									"});",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"age\": 56\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:1232/simple/code",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "1232",
-							"path": [
-								"simple",
-								"code"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "simple name",
+					"name": "amazon name",
 					"event": [
 						{
 							"listen": "test",
@@ -359,14 +360,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:1232/simple/code",
+							"raw": "http://localhost:1232/amazon/code",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "1232",
 							"path": [
-								"simple",
+								"amazon",
 								"code"
 							]
 						}
@@ -374,7 +375,7 @@
 					"response": []
 				},
 				{
-					"name": "simple not found",
+					"name": "amazon not found",
 					"event": [
 						{
 							"listen": "test",
@@ -393,14 +394,14 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:1232/simple/cooooooode",
+							"raw": "http://localhost:1232/amazon/cooooooode",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "1232",
 							"path": [
-								"simple",
+								"amazon",
 								"cooooooode"
 							]
 						}
@@ -408,7 +409,7 @@
 					"response": []
 				},
 				{
-					"name": "simple",
+					"name": "amazon",
 					"event": [
 						{
 							"listen": "test",
@@ -430,14 +431,14 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:1232/simple/code",
+							"raw": "http://localhost:1232/amazon/code",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "1232",
 							"path": [
-								"simple",
+								"amazon",
 								"code"
 							]
 						}

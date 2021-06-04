@@ -12,16 +12,22 @@ import (
 	"gorm.io/gorm"
 )
 
-type User struct {
-	Code string `json:"code"`
-	Name string `json:"name" validate:"required"`
-	Age  int    `json:"age" validate:"max=150"`
+type Product struct {
+	Asin   string `json:"asin"`
+	Name   string `json:"name" validate:"required"`
+	Maker  string `json:"maker" validate:"required"`
+	Price  int    `json:"price" validate:"max=150"`
+	Reason string `json:"reason" validate:"required"`
+	Url    string `json:"url" validate:"required"`
 }
 
-type UserPatch struct {
-	Code *string `json:"code"`
-	Name *string `json:"name"`
-	Age  *int    `json:"age" validate:"max=150"`
+type ProductPatch struct {
+	Asin   *string `json:"asin"`
+	Name   *string `json:"name"`
+	Maker  *string `json:"maker"`
+	Price  *int    `json:"price" validate:"max=150"`
+	Reason *string `json:"reason"`
+	Url    *string `json:"url"`
 }
 
 type CustomValidator struct {
@@ -47,119 +53,159 @@ func main() {
 	e.Validator = NewValidator()
 
 	//mysql connection
-	dsn := "docker:docker@tcp(127.0.0.1:3307)/sampleApi?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "docker:docker@tcp(127.0.0.1:3307)/AmazonApi?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(err.Error())
 	}
 
-	// Migrate the schema,user.go参照
-	if err := db.AutoMigrate(&repository.Users{}); err != nil {
+	// Migrate the schema,product.go参照
+	if err := db.AutoMigrate(&repository.Products{}); err != nil {
 		panic(err.Error())
 	}
 
-	e.POST("/simple", func(context echo.Context) error {
+	e.POST("/amazon", func(context echo.Context) error {
 		// リクエストを取得する
-		user := new(User)
-		_ = context.Bind(user)
+		product := new(Product)
+		_ = context.Bind(product)
 		// バリデーション
-		if err := context.Validate(user); err != nil {
+		if err := context.Validate(product); err != nil {
 			return context.String(http.StatusBadRequest, err.Error())
 		}
 		// Create
 		now := time.Now()
-		db.Create(&repository.Users{
-			Code:      user.Code,
-			Name:      user.Name,
-			Age:       user.Age,
+		db.Create(&repository.Products{
+			Asin:      product.Asin,
+			Name:      product.Name,
+			Maker:     product.Maker,
+			Price:     product.Price,
+			Reason:    product.Reason,
+			Url:       product.Url,
+			Status:    false,
 			CreatedAt: now,
 			UpdatedAt: now,
 		})
-		return context.JSON(http.StatusCreated, user)
+		return context.JSON(http.StatusCreated, product)
 	})
 
-	e.GET("/simple/:code", func(context echo.Context) error {
+	e.PATCH("/amazon/inactive/:asin", func(context echo.Context) error {
 		// リクエストを取得する
-		code := context.Param("code")
-		m := new(repository.Users)
-		if tx := db.First(m, "code = ?", code); tx.Error != nil {
+		asin := context.Param("asin")
+
+		m := new(repository.Products)
+		// First
+		if tx := db.First(m, "asin = ?", asin); tx.Error != nil {
 			return context.String(http.StatusNotFound, tx.Error.Error())
 		}
 
-		user := &User{
-			Code: m.Code,
-			Name: m.Name,
-			Age:  m.Age,
+		m.Status = true
+		if tx := db.Model(m).Where("asin = ?", asin).Updates(m); tx.Error != nil {
+			return context.String(http.StatusBadRequest, tx.Error.Error())
 		}
-		return context.JSON(http.StatusOK, user)
+
+		return context.JSON(http.StatusAccepted, nil)
 	})
-	e.PUT("/simple/:code", func(context echo.Context) error {
+
+	e.GET("/amazon/:asin", func(context echo.Context) error {
 		// リクエストを取得する
-		code := context.Param("code")
-		user := new(User)
-		_ = context.Bind(user)
+		asin := context.Param("asin")
+		m := new(repository.Products)
+		if tx := db.First(m, "asin = ?", asin); tx.Error != nil {
+			return context.String(http.StatusNotFound, tx.Error.Error())
+		}
+
+		product := &Product{
+			Asin:   m.Asin,
+			Name:   m.Name,
+			Maker:  m.Maker,
+			Price:  m.Price,
+			Reason: m.Reason,
+			Url:    m.Url,
+		}
+		return context.JSON(http.StatusOK, product)
+	})
+	e.PUT("/amazon/:asin", func(context echo.Context) error {
+		// リクエストを取得する
+		asin := context.Param("asin")
+		product := new(Product)
+		_ = context.Bind(product)
 
 		// バリデーション
-		if err := context.Validate(user); err != nil {
+		if err := context.Validate(product); err != nil {
 			return context.JSON(http.StatusBadRequest, err)
 		}
 
-		m := new(repository.Users)
+		m := new(repository.Products)
 		// First
-		if tx := db.First(m, "code = ?", code); tx.Error != nil {
+		if tx := db.First(m, "asin = ?", asin); tx.Error != nil {
 			return context.String(http.StatusNotFound, tx.Error.Error())
 		}
 		// Update
 		now := time.Now()
 		db.Model(m).
-			Where("code = ?", code).
-			Updates(repository.Users{
-				Name:      user.Name,
-				Age:       user.Age,
+			Where("asin = ?", asin).
+			Updates(repository.Products{
+				Name:      product.Name,
+				Maker:     product.Maker,
+				Price:     product.Price,
+				Reason:    product.Reason,
 				UpdatedAt: now,
 			})
-		return context.JSON(http.StatusOK, user)
+		return context.JSON(http.StatusOK, product)
 	})
-	e.PATCH("/simple/:code", func(context echo.Context) error {
+	e.PATCH("/amazon/:asin", func(context echo.Context) error {
 		// リクエストを取得する
-		code := context.Param("code")
-		user := new(UserPatch)
-		_ = context.Bind(user)
+		asin := context.Param("asin")
+		product := new(ProductPatch)
+		_ = context.Bind(product)
 		// バリデーション
-		if err := context.Validate(user); err != nil {
+		if err := context.Validate(product); err != nil {
 			return context.JSON(http.StatusBadRequest, err)
 		}
 
-		m := new(repository.Users)
+		m := new(repository.Products)
 		// First
-		if tx := db.First(m, "code = ?", code); tx.Error != nil {
+		if tx := db.First(m, "asin = ?", asin); tx.Error != nil {
 			return context.String(http.StatusNotFound, tx.Error.Error())
 		}
 
-		tx := db.Model(m).Where("code = ?", code)
-		if user.Age != nil {
-			m.Age = *user.Age
+		tx := db.Model(m).Where("asin = ?", asin)
+
+		if product.Name != nil {
+			m.Name = *product.Name
 		}
-		if user.Name != nil {
-			m.Name = *user.Name
+		if product.Maker != nil {
+			m.Name = *product.Maker
+		}
+		if product.Price != nil {
+			m.Price = *product.Price
+		}
+		if product.Reason != nil {
+			m.Reason = *product.Reason
+		}
+		if product.Url != nil {
+			m.Url = *product.Url
 		}
 		tx.Updates(*m)
-		return context.JSON(http.StatusOK, &User{
-			Code: m.Code,
-			Name: m.Name,
-			Age:  m.Age,
+		return context.JSON(http.StatusOK, &Product{
+			Asin:   m.Asin,
+			Name:   m.Name,
+			Maker:  m.Maker,
+			Price:  m.Price,
+			Reason: m.Reason,
+			Url:    m.Url,
 		})
 	})
-	e.DELETE("/simple/:code", func(context echo.Context) error {
+	e.DELETE("/amazon/:asin", func(context echo.Context) error {
 		// リクエストを取得する
-		code := context.Param("code")
+		asin := context.Param("asin")
 
-		m := new(repository.Users)
+		m := new(repository.Products)
 		// First
-		if tx := db.First(m, "code = ?", code); tx.Error != nil {
+		if tx := db.First(m, "asin = ?", asin); tx.Error != nil {
 			return context.String(http.StatusNotFound, tx.Error.Error())
 		}
-		db.Delete(m, "code = ?", code)
+		db.Delete(m, "asin = ?", asin)
 
 		return context.String(http.StatusNoContent, "")
 	})
